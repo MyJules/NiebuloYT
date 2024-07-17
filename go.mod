@@ -1,4 +1,4 @@
-// module github.com/MyJules/TBot
+module github.com/MyJules/TBot
 
 go 1.19
 
