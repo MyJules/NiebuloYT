@@ -5,7 +5,12 @@ import (
 )
 
 func main() {
-	bot, err := tgbotapi.NewBotAPI("")
+	botConfig, err := BotConfigFromYamlFile("config.yaml")
+	if err != nil {
+		panic(err)
+	}
+
+	bot, err := tgbotapi.NewBotAPI(botConfig.Telegram_token)
 	if err != nil {
 		panic(err)
 	}
