@@ -1,4 +1,4 @@
-module github.com/MyJules/TBot
+module github.com/MyJules/NiebuloYT
 
 go 1.19
 

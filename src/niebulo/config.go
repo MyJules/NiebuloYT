@@ -1,4 +1,4 @@
-package main
+package niebulo
 
 import (
 	"os"
@@ -6,12 +6,12 @@ import (
 	yaml "gopkg.in/yaml.v3"
 )
 
-type BotConfig struct {
+type NiebuloConfig struct {
 	Telegram_token string
 }
 
-func BotConfigFromYamlFile(configPath string) (botConfig BotConfig, err error) {
-	resultConfig := BotConfig{}
+func BotConfigFromYamlFile(configPath string) (botConfig NiebuloConfig, err error) {
+	resultConfig := NiebuloConfig{}
 
 	yamlFile, err := os.ReadFile(configPath)
 	if err != nil {
