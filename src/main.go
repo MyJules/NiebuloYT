@@ -11,5 +11,6 @@ func main() {
 	}
 
 	niebulo := niebulo.NewNiebuloBot(niebuloConfig)
+	defer niebulo.Delete()
 	niebulo.Start()
 }
