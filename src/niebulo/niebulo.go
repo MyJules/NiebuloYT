@@ -44,6 +44,6 @@ func (niebulo *Niebulo) Start() {
 			continue
 		}
 
-		niebulo.onMessageReceived(update.Message)
+		go niebulo.onMessageReceived(update.Message)
 	}
 }
