@@ -6,23 +6,21 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
-	"sync"
 
 	"go.uber.org/zap"
 )
 
-type NiebuloYTState int32
+type YTAudioState int32
 
 const (
-	Loading NiebuloYTState = iota
+	Loading YTAudioState = iota
 	Idle
 	Ready
 	Failed
 )
 
 type YTAudio struct {
-	state         NiebuloYTState
-	stateMutex    sync.Mutex
+	state         YTAudioState
 	url           *url.URL
 	logger        *zap.Logger
 	audioPath     string
@@ -37,7 +35,7 @@ func NewYTAudio(youtubeURL *url.URL) YTAudio {
 	}
 
 	logger.Info("YTAudio created with url: " + youtubeURL.String())
-	return YTAudio{state: Idle, stateMutex: sync.Mutex{}, url: youtubeURL, logger: logger, audioPath: "", onAudioReady: nil, onAudioFailed: nil}
+	return YTAudio{state: Idle, url: youtubeURL, logger: logger, audioPath: "", onAudioReady: nil, onAudioFailed: nil}
 }
 
 func (ytAudio *YTAudio) RegisterOnAudioReady(fn func()) {
@@ -97,18 +95,21 @@ func (ytAudio *YTAudio) DownloadAudio() {
 }
 
 func (ytAudio *YTAudio) ClearAudio() {
+	if ytAudio.state != Ready {
+		return
+	}
+
 	e := os.Remove(ytAudio.audioPath)
 	if e != nil {
 		ytAudio.logger.Warn("Failed to clear audio")
 		return
 	}
+	ytAudio.logger.Info("Cleard audio file: " + ytAudio.audioPath)
 	ytAudio.setState(Idle)
 }
 
-func (ytAudio *YTAudio) setState(newState NiebuloYTState) {
-	ytAudio.stateMutex.Lock()
+func (ytAudio *YTAudio) setState(newState YTAudioState) {
 	ytAudio.state = newState
-	ytAudio.stateMutex.Unlock()
 }
 
 func extractDestination(text string) string {

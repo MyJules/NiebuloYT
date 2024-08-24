@@ -1,13 +1,15 @@
 package niebulo
 
 import (
+	yt "github.com/MyJules/NiebuloYT/yt"
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"go.uber.org/zap"
 )
 
 type Niebulo struct {
-	botApi *tgbotapi.BotAPI
-	logger *zap.Logger
+	botApi  *tgbotapi.BotAPI
+	logger  *zap.Logger
+	taskMap map[string]*yt.YTAudio
 }
 
 func NewNiebuloBot(niebuloConfig NiebuloConfig) Niebulo {
@@ -24,7 +26,7 @@ func NewNiebuloBot(niebuloConfig NiebuloConfig) Niebulo {
 	bot.Debug = false
 
 	logger.Info("Niebulo Created")
-	return Niebulo{botApi: bot, logger: logger}
+	return Niebulo{botApi: bot, logger: logger, taskMap: make(map[string]*yt.YTAudio)}
 }
 
 func (niebulo *Niebulo) Delete() {
