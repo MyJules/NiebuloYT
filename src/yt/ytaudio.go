@@ -60,38 +60,37 @@ func (ytAudio *YTAudio) DownloadAudio() {
 		return
 	}
 
-	go func() {
-		ytAudio.logger.Info("Started downloading audio")
-		ytAudio.setState(Loading)
+	ytAudio.logger.Info("Started downloading audio")
+	ytAudio.setState(Loading)
 
-		//download audio here
-		stdout := new(bytes.Buffer)
-		stderr := new(bytes.Buffer)
-		ytdl := exec.Command("../bin/yt-dlp.exe", "-x", "--audio-format", "mp3", "-o", "%(title)s", ytAudio.url.String())
-		ytdl.Stdout = stdout
-		ytdl.Stderr = stderr
-		err := ytdl.Run()
-		if err != nil {
-			ytAudio.logger.Error("Failed to download youtube audio")
-			ytAudio.logger.Error(err.Error())
-			ytAudio.logger.Error(stderr.String())
-			ytAudio.setState(Failed)
-			if ytAudio.onAudioFailed != nil {
-				ytAudio.onAudioFailed()
-			}
-			return
+	//download audio here
+	stdout := new(bytes.Buffer)
+	stderr := new(bytes.Buffer)
+	ytdl := exec.Command("./yt-dlp.exe", "-x", "--audio-format", "mp3", "-o", "%(title)s", ytAudio.url.String())
+	ytdl.Stdout = stdout
+	ytdl.Stderr = stderr
+	err := ytdl.Run()
+	if err != nil {
+		ytAudio.logger.Error("Failed to download youtube audio")
+		ytAudio.logger.Error(err.Error())
+		ytAudio.logger.Error(stderr.String())
+		ytAudio.setState(Failed)
+		if ytAudio.onAudioFailed != nil {
+			ytAudio.onAudioFailed()
 		}
+		return
+	}
 
-		audioFileName := extractDestination(stdout.String()) + ".mp3"
-		ytAudio.logger.Info("Saved audio to file: " + audioFileName)
+	audioFileName := extractDestination(stdout.String()) + ".mp3"
+	ytAudio.logger.Info("Saved audio to file: " + audioFileName)
 
-		ytAudio.audioPath = audioFileName
-		ytAudio.logger.Info("Finished downloading audio")
-		ytAudio.setState(Ready)
-		if ytAudio.onAudioReady != nil {
-			ytAudio.onAudioReady()
-		}
-	}()
+	ytAudio.audioPath = audioFileName
+	ytAudio.logger.Info("Finished downloading audio")
+	ytAudio.setState(Ready)
+	if ytAudio.onAudioReady != nil {
+		ytAudio.onAudioReady()
+	}
+
 }
 
 func (ytAudio *YTAudio) ClearAudio() {

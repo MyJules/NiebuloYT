@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	niebuloConfig, err := niebulo.BotConfigFromYamlFile("../config/config.yaml")
+	niebuloConfig, err := niebulo.BotConfigFromYamlFile("config.yaml")
 	if err != nil {
 		panic(err)
 	}

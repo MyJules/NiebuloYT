@@ -38,7 +38,7 @@ func (niebulo *Niebulo) onMessageReceived(message *tgbotapi.Message) {
 		ytAudio.ClearAudio()
 	})
 	niebulo.taskMap[messageUserName] = &ytAudio
-	ytAudio.DownloadAudio()
+	go ytAudio.DownloadAudio()
 	niebulo.sendTextOrPanic(message, "Started downloading audio")
 }
 
